@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Countdown</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #countdown-container {
+            border: 5px solid #e74c3c; /* Border color: Christmas red */
+            border-radius: 15px; /* Rounded border corners */
+            padding: 20px;
+            margin: 20px;
+            background-color: #fff; /* White background */
+            animation: shake 0s; /* Initial animation set to 0 seconds */
+        }
+
+        #countdown {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #greeting {
+            display: none;
+            font-size: 36px;
+            color: #e74c3c;
+            margin-top: 20px;
+            animation: bounce 1s infinite alternate;
+        }
+
+        .doodle {
+            font-size: 40px;
+            position: absolute;
+        }
+
+        .gift {
+            font-size: 20px;
+            color: red; /* Gift color */
+            position: absolute;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown-container">
+        <div id="countdown"></div>
+        <div id="greeting">Merry Christmas!</div>
+    </div>
+
+    <script>
+        // Set the date for Christmas (month is 0-indexed)
+        const christmasDate = new Date(2023, 11, 25);
+
+        // Number of gifts
+        const numGifts = 5;
+
+        function updateCountdown() {
+            const currentDate = new Date();
+            const timeDiff = christmasDate - currentDate;
+
+            // Calculate days, hours, minutes, and seconds
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            // Display the countdown
+            document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            // Show the greeting if it's Christmas
+            if (timeDiff <= 0) {
+                document.getElementById('greeting').style.display = 'block';
+                document.getElementById('countdown-container').style.border = 'none';
+                document.getElementById('countdown-container').style.backgroundColor = 'transparent';
+                moveDoodles();
+                spawnGifts();
+            }
+        }
+
+        // Update the countdown every second
+        setInterval(updateCountdown, 1000);
+
+        // Initial call to set the initial countdown
+        updateCountdown();
+
+        function createDoodles() {
+            for (let i = 0; i < numDoodles; i++) {
+                const doodle = document.createElement('div');
+                doodle.classList.add('doodle');
+                doodle.innerHTML = Math.random() < 0.5 ? '&#127876;' : '&#127873;'; // Unicode for 🎄 and 🎁
+
+                document.body.appendChild(doodle);
+                doodles.push({
+                    element: doodle,
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
+                    speedX: (Math.random() - 0.5) * 2, // Random speed between -1 and 1
+                    speedY: (Math.random() - 0.5) * 2,
+                });
+            }
+        }
+
+        function moveDoodles() {
+            createDoodles(); // Create doodles on Christmas
+
+            function animate() {
+                doodles.forEach(doodle => {
+                    doodle.x += doodle.speedX;
+                    doodle.y += doodle.speedY;
+
+                    if (doodle.x > window.innerWidth || doodle.x < 0) {
+                        doodle.speedX *= -1;
+                    }
+
+                    if (doodle.y > window.innerHeight || doodle.y < 0) {
+                        doodle.speedY *= -1;
+                    }
+
+                    doodle.element.style.left = `${doodle.x}px`;
+                    doodle.element.style.top = `${doodle.y}px`;
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        function spawnGifts() {
+            for (let i = 0; i < numGifts; i++) {
+                const gift = document.createElement('div');
+                gift.classList.add('gift');
+                gift.innerHTML = '🎁'; // Unicode for gift box
+                gift.style.left = `${Math.random() * (window.innerWidth - 40)}px`;
+                gift.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
+
+                document.body.appendChild(gift);
+
+                gift.addEventListener('click', () => {
+                    gift.style.display = 'none';
+                    setTimeout(() => {
+                        gift.style.display = 'block';
+                    }, 1000);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
